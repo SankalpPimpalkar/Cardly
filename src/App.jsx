@@ -16,10 +16,10 @@ export default function App() {
         <Route path="signin" element={<Signin />} />
       </Route>
 
-      <Route path="/" element={<Home />} />
       <Route path="/u/:username" element={<Profile />} />
 
       <Route path="/" element={<ProtectedLayout />} >
+        <Route path="/" element={<Home />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="edit-profile" element={<EditProfile />} />
       </Route>
