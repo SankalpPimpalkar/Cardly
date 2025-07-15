@@ -30,6 +30,9 @@ export default function AuthContextProvider({ children }) {
                     setAuthenticated(true)
                     return;
                 }
+
+                return navigate('/auth/signin')
+
             } catch (error) {
                 return navigate('/auth/signin')
             }
