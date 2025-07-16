@@ -17,7 +17,7 @@ export default function App() {
       </Route>
 
       <Route path="/u/:username" element={<Profile />} />
-      <Route path="" element={<Home />} />
+      <Route path="/" element={<Home />} />
 
       <Route path="/" element={<ProtectedLayout />} >
         <Route path="dashboard" element={<Dashboard />} />
