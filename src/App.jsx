@@ -17,9 +17,9 @@ export default function App() {
       </Route>
 
       <Route path="/u/:username" element={<Profile />} />
+      <Route path="" element={<Home />} />
 
       <Route path="/" element={<ProtectedLayout />} >
-        <Route path="" element={<Home />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="edit-profile" element={<EditProfile />} />
       </Route>

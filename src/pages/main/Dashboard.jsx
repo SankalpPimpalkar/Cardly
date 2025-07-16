@@ -1,23 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, X, Eye } from 'lucide-react';
+import { Plus, X, Eye, LoaderCircle } from 'lucide-react';
 import useAuth from '../../hooks/useAuth';
 import SocialLinkButton from '../../components/SocialLinkButton';
+import appwrite from '../../lib/appwrite';
 
 export default function Dashboard() {
-    const { user } = useAuth();
+    const { user, is_loading } = useAuth();
     const navigate = useNavigate();
+    const [isPendingLogout, startLogoutTransition] = useTransition()
 
-    const [showAddLinkInput, setShowAddLinkInput] = useState(false);
-    const [newLink, setNewLink] = useState('');
-    console.log(user)
+    function handleLogout() {
+        startLogoutTransition(async () => {
+            const { success } = await appwrite.LOGOUT_ACCOUNT()
+            if (success) {
+                navigate('/auth/signin')
+            }
+        })
+    }
 
-    const handleAddLink = () => {
-        if (!newLink.trim()) return;
-        console.log('Updating links with:', newLink);
-        setShowAddLinkInput(false);
-        setNewLink('');
-    };
+    if (is_loading) {
+        return (
+            <div className='w-full min-h-dvh flex items-center justify-center'>
+                <LoaderCircle size={32} className='animate-spin' />
+            </div>
+        )
+    }
 
     return (
         <div className="w-full min-w-0 px-4 py-6 sm:px-6 sm:py-10 mx-auto max-w-3xl overflow-x-hidden">
@@ -89,32 +97,7 @@ export default function Dashboard() {
                         <p className="text-xs font-medium text-gray-500 uppercase tracking-wider truncate">
                             Social Links
                         </p>
-                        <button
-                            onClick={() => setShowAddLinkInput(!showAddLinkInput)}
-                            className="text-gray-500 hover:text-gray-700 transition-colors p-1 flex-shrink-0"
-                        >
-                            {showAddLinkInput ? <X size={18} /> : <Plus size={18} />}
-                        </button>
                     </div>
-
-                    {showAddLinkInput && (
-                        <div className="flex flex-col sm:flex-row gap-2 pt-2 w-full min-w-0">
-                            <input
-                                type="url"
-                                value={newLink}
-                                onChange={(e) => setNewLink(e.target.value)}
-                                placeholder="https://example.com"
-                                className="w-full px-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-300 min-w-0"
-                            />
-                            <button
-                                onClick={handleAddLink}
-                                className="w-full sm:w-24 bg-gray-800 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
-                            >
-                                Add
-                            </button>
-                        </div>
-                    )}
-
                     <div className="space-y-2 min-w-0">
                         {user?.links?.length > 0 ? (
                             user.links.map((link, index) => (
@@ -127,6 +110,29 @@ export default function Dashboard() {
                         )}
                     </div>
                 </div>
+
+                <button
+                    onClick={handleLogout}
+                    disabled={isPendingLogout}
+                    className="w-full py-3 px-4 border border-red-200 bg-red-400 rounded-lg text-gray-100 font-medium active:bg-red-500 transition-colors cursor-pointer flex items-center gap-4 justify-center disabled:bg-red-600"
+                >
+                    {
+                        isPendingLogout ?
+                            (
+                                <>
+                                    <LoaderCircle size={18} className='animate-spin' />
+                                    <p>
+                                        Logging Out
+                                    </p>
+                                </>
+                            ) :
+                            (
+                                <p>
+                                    Logout
+                                </p>
+                            )
+                    }
+                </button>
             </div>
         </div>
     );

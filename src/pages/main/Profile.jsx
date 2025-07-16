@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import appwrite from "../../lib/appwrite";
 import SocialLinkButton from "../../components/SocialLinkButton";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, LoaderCircle } from "lucide-react";
 
 export default function Profile() {
     const [user, setUser] = useState(null);
@@ -10,12 +10,20 @@ export default function Profile() {
     const [currentUser, setCurrentUser] = useState(null)
     const { username } = useParams();
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         (async () => {
-            const { data, success } = await appwrite.GET_PROFILE({ username });
-            if (success) {
-                setUser(data);
+            setIsLoading(true)
+            try {
+                const { data, success } = await appwrite.GET_PROFILE({ username });
+                if (success) {
+                    setUser(data);
+                }
+            } catch (error) {
+                setUser(null)
+            } finally {
+                setIsLoading(false)
             }
         })();
     }, [username]);
@@ -45,6 +53,14 @@ export default function Profile() {
                 console.error('Failed to copy: ', err);
             });
     };
+
+    if (isLoading) {
+        return (
+            <div className='w-full min-h-dvh flex items-center justify-center'>
+                <LoaderCircle size={32} className='animate-spin' />
+            </div>
+        )
+    }
 
     return (
         <div className="min-h-screen bg-white flex flex-col select-none">

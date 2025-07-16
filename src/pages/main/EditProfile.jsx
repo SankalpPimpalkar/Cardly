@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import appwrite from '../../lib/appwrite';
 
 export default function EditProfile() {
-    const { user } = useAuth();
+    const { user, is_loading } = useAuth();
     const navigate = useNavigate();
 
     const [name, setName] = useState(user?.name || '');
@@ -63,6 +63,14 @@ export default function EditProfile() {
         setLinks(user?.links || [])
     }, [user])
 
+    if (is_loading) {
+        return (
+            <div className='w-full min-h-dvh flex items-center justify-center'>
+                <LoaderCircle size={32} className='animate-spin' />
+            </div>
+        )
+    }
+
     return (
         <div className="max-w-3xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-10">
             {/* Header */}
@@ -102,7 +110,7 @@ export default function EditProfile() {
                             <input
                                 type="file"
                                 id="avatar"
-                                accept=".jpg, .jpeg .png"
+                                accept=".jpg, .jpeg, .png"
                                 className="hidden"
                                 onChange={(e) => setAvatar(e.target.files[0])}
                             />
@@ -110,7 +118,7 @@ export default function EditProfile() {
                     </div>
                     <div>
                         <p className="text-sm font-medium text-gray-500">Profile Picture</p>
-                        <p className="text-xs text-gray-400">JPG, PNG (max 2MB)</p>
+                        <p className="text-xs text-gray-400">JPG, JPEG, PNG (max 2MB)</p>
                     </div>
                 </div>
 
