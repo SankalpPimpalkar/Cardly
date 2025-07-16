@@ -99,7 +99,7 @@ export default function Home() {
                         Get Started <ArrowRight size={18} />
                     </button>
                     <button
-                        onClick={() => navigate('/demo')}
+                        onClick={() => navigate('/u/shanky')}
                         className="border border-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors"
                     >
                         See Demo
