@@ -54,7 +54,7 @@ export default function Login() {
                             Password
                         </label>
                         <Link
-                            to="/auth/forgot-password"
+                            to="#"
                             className="text-xs text-black hover:underline"
                         >
                             Forgot password?
